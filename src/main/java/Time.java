@@ -19,6 +19,14 @@ public class Time
         checkTime();
     }
 
+    public Time(Time time)
+    {
+        if(time == null)
+            throw new NullPointerException("Time is NULL!");
+        this.hours = time.getHours();
+        this.minutes = time.getMinutes();
+    }
+
     private void checkTime()
     {
         while(minutes >= 60)
@@ -34,9 +42,31 @@ public class Time
 
     public void addTime(int hours, int minutes)
     {
+        if(hours<0 || minutes < 0)
+            throw new ArithmeticException("Wrong number of minutes or hours!");
         this.minutes += minutes;
         this.hours += hours;
         checkTime();
+    }
+
+    public int compareWithOtherTime(Time secondTime)
+    {
+
+        //0 -> times are the same
+        //1 -> time is 'bigger' than second
+        //-1 ...
+        if(secondTime == null)
+            throw new NullPointerException("Time is NULL!");
+        int hoursOfSecondTime = secondTime.getHours();
+        int minutesOfSecondTime = secondTime.getMinutes();
+
+        if(hours == hoursOfSecondTime && minutes == minutesOfSecondTime)
+            return 0;
+        else if(hours > hoursOfSecondTime || (hours == hoursOfSecondTime && minutes > minutesOfSecondTime))
+            return 1;
+        else
+            return -1;
+
     }
 
     private String getNumberWithTwoDigits(int number)
@@ -49,13 +79,6 @@ public class Time
         return numberWithTwoDigits;
     }
 
-    public void setHours(int hours) {
-        this.hours = hours;
-    }
-
-    public void setMinutes(int minutes) {
-        this.minutes = minutes;
-    }
 
     public int getHours() {
         return hours;
@@ -67,6 +90,6 @@ public class Time
 
     public String toString()
     {
-        return getNumberWithTwoDigits(hours) + " : "+ getNumberWithTwoDigits(minutes);
+        return"\""+ getNumberWithTwoDigits(hours) + ":"+ getNumberWithTwoDigits(minutes)+"\"";
     }
 }

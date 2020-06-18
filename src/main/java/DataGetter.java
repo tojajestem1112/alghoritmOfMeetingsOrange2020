@@ -1,5 +1,3 @@
-import com.sun.xml.internal.ws.util.StringUtils;
-
 import javax.xml.bind.ValidationException;
 import java.util.LinkedList;
 
@@ -15,21 +13,20 @@ public class DataGetter
         int minutes = Integer.parseInt(durationTime.split(":")[1]);
         return hours * 60 + minutes;
     }
-    public void getEmployee(String text) throws ValidationException {
-        text = text.trim().replaceAll("[\\[\\]\\{\\},\n\t ]","");
-        String[] tempTable = text.split("[\"\\:]");
+    public Employee getEmployee(String text) throws ValidationException {
+        text = text.trim().replaceAll("[\\[\\]\\{\\},\n\t ]",""); //removing unnecessary characters
+        String[] tempTable = text.split("[\"\\:]");//Creating table : working_hours | start | 15 | 00 | end | ...
 
         boolean workFlag = false;
         boolean meetingFlag = false;
         Employee emp = new Employee();
-        Time tempTime = new Time();
         LinkedList<String> elementsOfCalendar = new LinkedList<>();
-        for(int i=0;i<tempTable.length;i++)
+        for(int i=0;i<tempTable.length;i++)//removing empty cells
             if(tempTable[i].length()!=0) elementsOfCalendar.add(tempTable[i]);
 
-        for(int i=0;i<elementsOfCalendar.size();i++)
+        for(int i=0;i<elementsOfCalendar.size();i++)//reading data
         {
-            System.out.println(elementsOfCalendar.get(i));
+            //System.out.println(elementsOfCalendar.get(i));
             if(elementsOfCalendar.get(i).equals("working_hours"))
             {
                 workFlag = true;
@@ -44,10 +41,10 @@ public class DataGetter
             {
                 if(!elementsOfCalendar.get(i+3).equals("end"))
                     throw new ValidationException("Invalid structure of calendar");
-                int startHours = Integer.parseInt(elementsOfCalendar.get(i+1));
-                int startMinutes = Integer.parseInt(elementsOfCalendar.get(i+2));
-                int endHours = Integer.parseInt(elementsOfCalendar.get(i+4));
-                int endMinutes = Integer.parseInt(elementsOfCalendar.get(i+5));
+                int startHours = Integer.parseInt(elementsOfCalendar.get(i+1));// start HH
+                int startMinutes = Integer.parseInt(elementsOfCalendar.get(i+2));//start MM
+                int endHours = Integer.parseInt(elementsOfCalendar.get(i+4));//end HH
+                int endMinutes = Integer.parseInt(elementsOfCalendar.get(i+5));//end MM
                 i+=5;
                 if(workFlag && !meetingFlag) {
                     emp.setStartOfWork(new Time(startHours, startMinutes));
@@ -55,7 +52,8 @@ public class DataGetter
                 }
                 else if (!workFlag && meetingFlag)
                 {
-                    emp.addMeeting(new Time(startHours, startMinutes), new Time(endHours, endMinutes));
+                    Meeting newMeeting = new Meeting(new Time(startHours, startMinutes), new Time(endHours, endMinutes));
+                    emp.addMeeting(newMeeting);
                 }
                 else
                     throw new ValidationException("Invalid structure of calendar");
@@ -64,7 +62,7 @@ public class DataGetter
                 throw new ValidationException("Invalid structure of calendar");
 
         }
-        emp.showPerson();
+        return emp;
 
     }
 }

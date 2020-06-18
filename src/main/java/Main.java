@@ -4,6 +4,7 @@ public class Main {
 
     public static void main(String args[])
     {
+        //DATA part
         System.out.println("******Spotkajmy się******");
         String calendar1 = "{\n" +
                 "working_hours: {\n" +
@@ -49,12 +50,17 @@ public class Main {
                 "}\n" +
                 "]\n" +
                 "}";
-        String meetingDuration = "meeting duration: [01:30]";
+        String meetingDuration = "meeting duration: [00:30]";
+        //****************************************************************
         DataGetter dg = new DataGetter();
         int durationTimeInMinutes = dg.getDurationTime(meetingDuration);
-        System.out.println(durationTimeInMinutes);
         try {
-            dg.getEmployee(calendar1);
+            Employee emp1 = dg.getEmployee(calendar1);
+            Employee emp2 = dg.getEmployee(calendar2);
+            ProposingMeetings pm = new ProposingMeetings(emp1, emp2, durationTimeInMinutes);
+            pm.generatePropositions();
+            String output = pm.getIntervals();
+            System.out.println("Output: "+output);
         } catch (ValidationException e) {
             e.printStackTrace();
         }
